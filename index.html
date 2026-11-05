@@ -28,9 +28,10 @@ h1{font-size:1.9rem;font-weight:300;margin-bottom:.4rem;background:linear-gradie
 .banner strong{color:var(--ink)}.banner .hl{color:var(--acc)}
 .panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem 1.3rem;margin-bottom:1rem}
 .panel.ok{box-shadow:inset 3px 0 0 var(--ok)}
-input[type=password],input[type=text],textarea{width:100%;padding:.85rem 1rem;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:var(--fm);font-size:.78rem;margin-bottom:.6rem}
+input[type=password],input[type=text],select,textarea{width:100%;padding:.85rem 1rem;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-family:var(--fm);font-size:.78rem;margin-bottom:.6rem}
+select{cursor:pointer}
 textarea{resize:vertical;min-height:76px;line-height:1.5}
-input:focus,textarea:focus{outline:none;border-color:var(--acc)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--acc)}
 .btn{width:100%;padding:.85rem 1.2rem;border-radius:var(--r);border:1px solid var(--border);background:var(--bg2);color:var(--ink);font-size:.85rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;margin-bottom:.7rem;transition:all .2s;font-family:inherit}
 .btn:hover:not(:disabled){background:var(--bg3);border-color:var(--acc)}
 .btn:disabled{opacity:.35;cursor:not-allowed}
@@ -60,9 +61,6 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc)}
 .section-body{max-height:0;overflow:hidden;transition:max-height .4s ease}
 .section.open .section-body{max-height:20000px}
 .section-content{padding:0 1.2rem 1.2rem}
-.launcher{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;margin-bottom:1rem}
-.launcher-row{display:flex;gap:.7rem;flex-wrap:wrap}
-.launcher-row .btn{margin-bottom:0;flex:1;min-width:180px}
 .styles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.6rem;margin-top:.5rem}
 .style-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.75rem;cursor:pointer;transition:all .2s;text-align:center}
 .style-card:hover{border-color:var(--faint);background:var(--bg3)}
@@ -97,15 +95,6 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc)}
 .transformed-card .video-result video{width:100%;aspect-ratio:9/16;object-fit:cover;display:block}
 .transformed-card .video-result .video-status{font-size:.7rem;color:var(--warn);text-align:center;padding:.5rem;font-family:var(--fm)}
 .queue{margin-top:1rem}
-.queue-summary{background:var(--panel);border:1px solid var(--border);border-left:2px solid var(--acc);border-radius:var(--r);padding:.8rem 1rem;margin-bottom:.7rem;font-size:.78rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem;font-family:var(--fm)}
-.queue-item{display:flex;align-items:center;gap:.8rem;padding:.6rem .8rem;border-radius:var(--r);border:1px solid var(--border);margin-bottom:.3rem;background:var(--panel);font-size:.78rem}
-.queue-item.creating{border-color:var(--warn)}
-.queue-item.processing{border-color:var(--acc)}
-.queue-item.done{border-color:var(--ok)}
-.queue-item.failed{border-color:var(--err)}
-.queue-item .q-icon{width:1.4rem;text-align:center;flex-shrink:0}
-.queue-item .q-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.queue-item .q-status{font-size:.68rem;color:var(--dim);text-align:right;max-width:55%;font-family:var(--fm)}
 .debug-panel{position:fixed;bottom:0;left:0;right:0;height:240px;background:#05050a;border-top:2px solid var(--acc);z-index:200;display:flex;flex-direction:column;font-family:var(--fm);box-shadow:0 -8px 32px rgba(0,0,0,.7);transition:height .3s ease}
 .debug-panel.collapsed{height:40px}
 .debug-header{display:flex;justify-content:space-between;align-items:center;padding:.4rem .7rem;background:linear-gradient(90deg,#0f0f18,#1a1a28);border-bottom:1px solid var(--border);flex-shrink:0;user-select:none}
@@ -143,8 +132,6 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc)}
 .spinner{width:12px;height:12px;border:2px solid rgba(229,193,90,.2);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 .hidden{display:none!important}
-#noSleepCanvas{position:fixed;top:0;left:0;width:1px;height:1px;opacity:.01;pointer-events:none;z-index:-1}
-#noSleepVideo{position:fixed;top:0;left:0;width:1px;height:1px;opacity:.01;pointer-events:none;z-index:-1}
 @media(max-width:480px){h1{font-size:1.55rem}.transformed-grid{grid-template-columns:1fr}.images-grid{grid-template-columns:repeat(auto-fill,minmax(70px,1fr))}body{padding-bottom:26rem}.debug-panel{height:200px}.status-bar{bottom:210px}}
 </style>
 </head>
@@ -159,11 +146,19 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc)}
 <strong>Transforme tes photos en anime.</strong> Choisis un style, envoie tes images, l'IA les transforme fidèlement en préservant les visages, les poses et les compositions. Puis génère une vidéo animée à partir de chaque image transformée.
 </div>
 
-<!-- Clés API -->
+<!-- Configuration API & Modèle -->
 <div class="panel" id="api-panel">
-<label class="label" style="display:block;font-size:.72rem;color:var(--dim);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.15em;font-weight:600;">Clés API Agnes — une par ligne (chaque clé = 1 worker parallèle)</label>
-<textarea id="api-keys-input" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx&#10;sk-yyyyyyyyyyyyyyyyyyyyyyyy" rows="3" spellcheck="false" autocomplete="off"></textarea>
+<label class="label" style="display:block;font-size:.72rem;color:var(--dim);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.15em;font-weight:600;">Clés API Agnes — une par ligne</label>
+<textarea id="api-keys-input" placeholder="sk-xxxxxxxxxxxxxxxxxxxxxxxx" rows="3" spellcheck="false" autocomplete="off"></textarea>
 <button type="button" class="btn" id="api-save-btn">Enregistrer les clés</button>
+
+<label class="label" style="display:block;font-size:.72rem;color:var(--dim);margin-top:.8rem;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.15em;font-weight:600;">Modèle Vidéo IA</label>
+<select id="video-model-select">
+  <option value="agnes-video-2.5" selected>agnes-video-2.5 (Recommandé / Stable)</option>
+  <option value="agnes-video-2.5-flash">agnes-video-2.5-flash (Rapide)</option>
+  <option value="agnes-video-v2.0">agnes-video-v2.0 (Ancienne version)</option>
+</select>
+
 <div class="status" id="api-status-line"><span class="dot"></span><span id="api-status-text">Aucune clé API enregistrée</span></div>
 <div class="keys-list" id="api-keys-status"></div>
 <div class="hint">Clés gratuites sur <a href="https://platform.agnes-ai.com" target="_blank">platform.agnes-ai.com</a> → Settings → API Keys</div>
@@ -192,9 +187,6 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc)}
 🎨 Transformer les photos
 </button>
 <button type="button" class="btn btn-stop" id="stop-btn">⏹ Arrêter</button>
-
-<!-- File d'attente -->
-<div class="queue" id="queue" style="display:none;"></div>
 
 <!-- Images transformées -->
 <div class="section hidden" id="section-transformed">
@@ -228,28 +220,21 @@ input:focus,textarea:focus{outline:none;border-color:var(--acc)}
 <div class="debug-body hidden" id="tech-body"></div>
 </div>
 
-<canvas id="noSleepCanvas" width="2" height="2"></canvas>
-<video id="noSleepVideo" playsinline muted loop></video>
-
 <script>
 // ══════════════════════════════════════════════════════════════════
 // CONFIGURATION
 // ══════════════════════════════════════════════════════════════════
 const API_BASE = 'https://apihub.agnes-ai.com/v1';
 const POLL_BASE = 'https://apihub.agnes-ai.com/agnesapi';
-const MODEL_TEXT = 'agnes-2.5-flash';
 const MODEL_IMAGE = 'agnes-image-2.1-flash';
-const MODEL_VIDEO = 'agnes-video-v2.0';
+let activeVideoModel = 'agnes-video-2.5'; // Modèle 2.5 par défaut
 const FRAME_RATE = 24;
 
 const IMAGE_PARALLEL = 3;
 const IMAGE_INTERVAL_MS = 3400;
-const VIDEO_INTERVAL_MIN = 62000;
-const VIDEO_INTERVAL_MAX = 90000;
-const VIDEO_INTERVAL_SAFE = 75000;
-const VIDEO_FIRST_POLL_DELAY_SEC = 80;
-const VIDEO_POLL_INTERVALS = [8, 8, 12, 12, 20, 20, 25];
-const VIDEO_MAX_POLL_ATTEMPTS = 100;
+const VIDEO_FIRST_POLL_DELAY_SEC = 25;
+const VIDEO_POLL_INTERVALS = [5, 6, 8, 10, 15, 20];
+const VIDEO_MAX_POLL_ATTEMPTS = 80;
 
 const API_KEYS_STORAGE = 'studio_anime_api_keys_v1';
 const DEBUG_MAX = 800;
@@ -281,26 +266,15 @@ const ANIME_STYLES = [
     prompt:'Watercolor anime style, soft painted aesthetic, bleeding colors, delicate brushstrokes, dreamy poetic atmosphere, paper texture, pastel palette' }
 ];
 
-// ══════════════════════════════════════════════════════════════════
-// ÉTAT GLOBAL
-// ══════════════════════════════════════════════════════════════════
 const state = {
   keyPool: [],
   isRunning: false,
   stopRequested: false,
   selectedStyle: ANIME_STYLES[0],
   images: [],
-  transformed: [],
-  isGeneratingImages: false,
-  isPlayingFilm: false,
-  playRAF: null,
-  voiceEnabled: true,
-  currentUtterance: null
+  transformed: []
 };
 
-// ══════════════════════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════════════════════
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
 function setStatus(text){const b=document.getElementById('status-bar');const t=document.getElementById('status-text');if(!b||!t)return;if(text){b.classList.add('visible');t.textContent=text}else b.classList.remove('visible')}
@@ -319,9 +293,6 @@ function sanitizeForApi(text){
     .replace(/[\u200B-\u200D\uFEFF]/g, '').replace(/\u00A0/g, ' ').replace(/\u202F/g, ' ');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// JOURNAL & DEBUG
-// ══════════════════════════════════════════════════════════════════
 function journalLog(msg, level){
   level = level || 'info';
   const body = document.getElementById('journal-body');
@@ -333,10 +304,9 @@ function journalLog(msg, level){
   entry.innerHTML = '<span class="j-time">'+esc(nowTime())+'</span><span class="j-icon">'+icon+'</span><span class="j-msg">'+esc(msg)+'</span>';
   body.appendChild(entry);
   body.scrollTop = body.scrollHeight;
-  while(body.children.length > DEBUG_MAX) body.removeChild(body.firstChild);
 }
 
-let debugCount=0,debugEntries=[],debugCollapsed=false,currentTab='journal';
+let debugEntries=[],debugCollapsed=false;
 function debugLog(level,category,message,data){
   const body = document.getElementById('tech-body');
   if(!body) return;
@@ -345,33 +315,27 @@ function debugLog(level,category,message,data){
   entry.className = 'debug-entry ' + level;
   let html = '<span class="debug-time">'+time+'</span><span class="debug-cat">['+esc(category)+']</span><span class="debug-msg">'+esc(message)+'</span>';
   if(data !== undefined && data !== null){
-    let ds;
-    if(typeof data === 'string') ds = data;
-    else { try { ds = JSON.stringify(data, null, 2); } catch(e) { ds = String(data); } }
-    if(ds.length > 3000) ds = ds.slice(0,3000) + '\n…[tronqué]';
+    let ds = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    if(ds.length > 2500) ds = ds.slice(0,2500) + '\n…[tronqué]';
     html += '<pre class="debug-data">'+esc(ds)+'</pre>';
   }
   entry.innerHTML = html;
   body.appendChild(entry);
   debugEntries.push({time, level, category, message});
   if(debugEntries.length > DEBUG_MAX) debugEntries.shift();
-  while(body.children.length > DEBUG_MAX) body.removeChild(body.firstChild);
   body.scrollTop = body.scrollHeight;
-  debugCount++;
 }
-function clearDebug(){const b=document.getElementById('tech-body');const j=document.getElementById('journal-body');if(b)b.innerHTML='';if(j)j.innerHTML='';debugEntries=[];debugCount=0;}
-function copyDebug(){const lines=debugEntries.map(e=>e.time+' ['+e.category+'] '+e.message).join('\n');const finish=(ok)=>showToast(ok?'Console copiée':'Copie impossible',ok?'success':'error');try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(lines).then(()=>finish(true)).catch(()=>legacyCopy(lines,finish));return}}catch(e){}legacyCopy(lines,finish)}
-function legacyCopy(text,cb){const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.focus();ta.select();let ok=false;try{ok=document.execCommand('copy')}catch(e){}document.body.removeChild(ta);cb(ok)}
-function toggleDebugCollapse(){const p=document.getElementById('debug-panel');const b=document.getElementById('debug-collapse-btn');if(!p||!b)return;debugCollapsed=!debugCollapsed;p.classList.toggle('collapsed',debugCollapsed);b.textContent=debugCollapsed?'+':'−'}
-function switchTab(tab){currentTab=tab;const j=document.getElementById('journal-body');const t=document.getElementById('tech-body');const tj=document.getElementById('tab-journal');const tt=document.getElementById('tab-tech');if(!j||!t)return;if(tab==='journal'){j.classList.remove('hidden');t.classList.add('hidden');tj.classList.add('active');tt.classList.remove('active')}else{t.classList.remove('hidden');j.classList.add('hidden');tt.classList.add('active');tj.classList.remove('active');t.scrollTop=t.scrollHeight}}
 
-// ══════════════════════════════════════════════════════════════════
-// POOL MULTI-CLÉS API
-// ══════════════════════════════════════════════════════════════════
-function getStoredKeys(){try{const raw=localStorage.getItem(API_KEYS_STORAGE);if(!raw)return[];const arr=JSON.parse(raw);if(!Array.isArray(arr))return[];return arr.filter(k=>typeof k==='string'&&k.trim().length>0)}catch(e){return[]}}
+function clearDebug(){const b=document.getElementById('tech-body');const j=document.getElementById('journal-body');if(b)b.innerHTML='';if(j)j.innerHTML='';debugEntries=[];}
+function copyDebug(){const lines=debugEntries.map(e=>e.time+' ['+e.category+'] '+e.message).join('\n');try{navigator.clipboard.writeText(lines).then(()=>showToast('Console copiée','success'));}catch(e){showToast('Erreur copie','error');}}
+function toggleDebugCollapse(){const p=document.getElementById('debug-panel');const b=document.getElementById('debug-collapse-btn');if(!p||!b)return;debugCollapsed=!debugCollapsed;p.classList.toggle('collapsed',debugCollapsed);b.textContent=debugCollapsed?'+':'−'}
+function switchTab(tab){const j=document.getElementById('journal-body');const t=document.getElementById('tech-body');const tj=document.getElementById('tab-journal');const tt=document.getElementById('tab-tech');if(tab==='journal'){j.classList.remove('hidden');t.classList.add('hidden');tj.classList.add('active');tt.classList.remove('active')}else{t.classList.remove('hidden');j.classList.add('hidden');tt.classList.add('active');tj.classList.remove('active');t.scrollTop=t.scrollHeight}}
+
+function getStoredKeys(){try{const raw=localStorage.getItem(API_KEYS_STORAGE);if(!raw)return[];const arr=JSON.parse(raw);return Array.isArray(arr)?arr.filter(k=>k.trim().length>0):[]}catch(e){return[]}}
 function setStoredKeys(keys){try{localStorage.setItem(API_KEYS_STORAGE,JSON.stringify(keys))}catch(e){}}
 function refreshKeyPool(){const stored=getStoredKeys();const old=state.keyPool||[];state.keyPool=stored.map(k=>{const existing=old.find(p=>p.key===k);return existing||{key:k,lastUsed:0,cooldownUntil:0,active:true,errorCount:0}})}
 function hasActiveKey(){return state.keyPool.some(k=>k.active)}
+
 function getReadyKey(){
   const now=Date.now();
   const active=state.keyPool.filter(k=>k.active);
@@ -381,6 +345,7 @@ function getReadyKey(){
   ready.sort((a,b)=>(a.lastUsed||0)-(b.lastUsed||0));
   return{key:ready[0],waitMs:0};
 }
+
 async function acquireKey(label){
   while(true){
     if(state.stopRequested)throw new Error('Arrêt demandé');
@@ -388,10 +353,11 @@ async function acquireKey(label){
     if(key){key.lastUsed=Date.now();return key}
     if(waitMs===0)throw new Error('Aucune clé API active');
     debugLog('warn',label,'Toutes les clés en cooldown — attente '+Math.round(waitMs/1000)+'s');
-    setStatus('Toutes les clés en cooldown — attente '+Math.round(waitMs/1000)+'s');
+    setStatus('Attente disponibilité clé ('+Math.round(waitMs/1000)+'s)');
     await sleep(waitMs);
   }
 }
+
 function renderKeysStatus(){
   const el=document.getElementById('api-keys-status');
   if(!el)return;
@@ -404,23 +370,22 @@ function renderKeysStatus(){
     return '<div class="key-row"><span class="key-id">#'+(i+1)+' · '+esc(k.key.slice(0,8))+'…'+esc(k.key.slice(-4))+'</span>'+stateHtml+'</div>';
   }).join('');
 }
+
 function saveKeysFromUI(){
   const input=document.getElementById('api-keys-input');
   if(!input)return;
   const raw=input.value||'';
   const keys=raw.split(/\r?\n/).map(l=>l.trim()).filter(l=>l.length>0);
   const valid=keys.filter(k=>k.startsWith('sk-'));
-  const invalid=keys.filter(k=>!k.startsWith('sk-'));
-  if(invalid.length>0){if(!confirm(invalid.length+' clé(s) ne commencent pas par "sk-". Les ignorer ?'))return;}
   setStoredKeys(valid);
   refreshKeyPool();
   updateApiPanel();
   renderKeysStatus();
   if(valid.length===0)showToast('Aucune clé valide enregistrée','warn');
   else showToast(valid.length+' clé(s) enregistrée(s) ✓','success');
-  debugLog('success','CLÉS',valid.length+' clé(s) active(s) · parallélisme max = '+valid.length);
-  journalLog(valid.length+' clé(s) API active(s). Parallélisme vidéo : '+valid.length+'.','key');
+  journalLog(valid.length+' clé(s) active(s).', 'key');
 }
+
 function updateApiPanel(){
   const panel=document.getElementById('api-panel');
   const input=document.getElementById('api-keys-input');
@@ -429,23 +394,19 @@ function updateApiPanel(){
   if(!panel||!input||!line||!text)return;
   refreshKeyPool();
   const n=state.keyPool.length;
-  if(n>0){panel.classList.add('ok');line.classList.add('ok');text.textContent=n+' clé(s) active(s) · parallélisme vidéo : '+n;input.value=state.keyPool.map(k=>k.key).join('\n');input.placeholder='';}
-  else{panel.classList.remove('ok');line.classList.remove('ok');text.textContent='Aucune clé API enregistrée';input.value='';input.placeholder='Collez vos clés API Agnes ici — une par ligne (sk-...)';}
+  if(n>0){panel.classList.add('ok');line.classList.add('ok');text.textContent=n+' clé(s) active(s)';input.value=state.keyPool.map(k=>k.key).join('\n');input.placeholder='';}
+  else{panel.classList.remove('ok');line.classList.remove('ok');text.textContent='Aucune clé API enregistrée';input.value='';input.placeholder='Collez vos clés API Agnes ici (sk-...)';}
   renderKeysStatus();
   updateButtons();
 }
 
-// ══════════════════════════════════════════════════════════════════
-// API FETCH AVEC POOL MULTI-CLÉS
-// ══════════════════════════════════════════════════════════════════
 async function apiFetch(url, options, label, maxAttempts){
   options=options||{};label=label||'API';
-  maxAttempts=(typeof maxAttempts==='number'&&maxAttempts>0)?maxAttempts:6;
+  maxAttempts=maxAttempts||5;
   let lastErr=null;
   for(let attempt=0;attempt<maxAttempts;attempt++){
     if(state.stopRequested)throw new Error('Arrêt demandé');
-    let keyObj=null;
-    try{keyObj=await acquireKey(label)}catch(e){throw e}
+    let keyObj=await acquireKey(label);
     const method=options.method||'GET';
     const headers=Object.assign({},options.headers||{},{'Authorization':'Bearer '+keyObj.key});
     const finalOptions=Object.assign({},options,{headers});
@@ -454,48 +415,41 @@ async function apiFetch(url, options, label, maxAttempts){
       const t0=Date.now();
       const res=await fetch(url,finalOptions);
       const dt=Date.now()-t0;
-      let retryAfter=0;
-      try{retryAfter=parseInt(res.headers.get('Retry-After')||'0',10)||0}catch(e){}
       let errorText='';
       if(!res.ok){try{errorText=(await res.clone().text()).slice(0,1200)}catch(e){}}
       debugLog('response','RÉP '+label,'HTTP '+res.status+' en '+dt+'ms · clé '+keyObj.key.slice(-4),errorText||undefined);
       if(res.ok){keyObj.errorCount=0;return res}
-      if([400,401,403,404].includes(res.status)){
-        if(res.status===401||res.status===403){
-          keyObj.errorCount=(keyObj.errorCount||0)+1;
-          debugLog('error','CLÉ','Clé '+keyObj.key.slice(-4)+' → HTTP '+res.status+' (errorCount='+keyObj.errorCount+')');
-          if(keyObj.errorCount>=3){keyObj.active=false;debugLog('error','CLÉ','Clé '+keyObj.key.slice(-4)+' désactivée après 3 erreurs auth');renderKeysStatus()}
-        }
-        const err=new Error('HTTP '+res.status+' — '+errorText.slice(0,400));
-        err.status=res.status;err.body=errorText;throw err;
+      
+      if([401,403].includes(res.status)){
+        keyObj.errorCount=(keyObj.errorCount||0)+1;
+        if(keyObj.errorCount>=3){keyObj.active=false;debugLog('error','CLÉ','Clé désactivée après 3 erreurs auth');renderKeysStatus()}
+        throw new Error('Erreur authentification clé');
       }
       if(res.status===429){
-        const wait=retryAfter>0?retryAfter:Math.min(120,20+attempt*15);
+        const wait=25+attempt*15;
         keyObj.cooldownUntil=Date.now()+wait*1000;
-        debugLog('warn','RATELIMIT','Clé '+keyObj.key.slice(-4)+' → cooldown '+wait+'s');
         renderKeysStatus();
-        const{key:next}=getReadyKey();
-        if(next&&next!==keyObj){debugLog('info','ROTATION','Nouvelle clé : '+next.key.slice(-4));continue}
-        setStatus('Limite API — nouvelle tentative dans '+wait+'s');
-        await sleep(Math.min(wait*1000,3000));
+        await sleep(2000);
         continue;
       }
-      if([500,502,503,504,520,522,524].includes(res.status)){
-        const wait=Math.min(60,8+attempt*6);
-        debugLog('warn','SERVICE','HTTP '+res.status+' — attente '+wait+'s');
-        setStatus('Service occupé — reprise dans '+wait+'s');
-        await sleep(wait*1000);continue;
+      if([500,502,503,504].includes(res.status)){
+        let errMsg = errorText;
+        try {
+          const parsed = JSON.parse(errorText);
+          if(parsed.error && parsed.error.message) errMsg = parsed.error.message;
+        } catch(e){}
+        const wait=Math.min(30,6+attempt*5);
+        debugLog('warn','SERVICE','Serveur occupé : '+errMsg+' — attente '+wait+'s');
+        setStatus('Service indisponible : reprise dans '+wait+'s…');
+        await sleep(wait*1000);
+        continue;
       }
-      const wait=Math.min(60,6+attempt*5);
-      debugLog('warn','HTTP','HTTP '+res.status+' — retry dans '+wait+'s');
-      await sleep(wait*1000);
+      throw new Error('HTTP '+res.status+' : '+errorText);
     }catch(e){
       if(e.message==='Arrêt demandé')throw e;
-      if(e.status&&[400,401,403,404].includes(e.status))throw e;
       lastErr=e;
-      const wait=Math.min(45,4+attempt*4);
+      const wait=4+attempt*4;
       debugLog('warn','NETWORK',e.message+' — retry dans '+wait+'s');
-      setStatus('Connexion instable — reprise dans '+wait+'s');
       await sleep(wait*1000);
     }
   }
@@ -503,14 +457,7 @@ async function apiFetch(url, options, label, maxAttempts){
 }
 
 // ══════════════════════════════════════════════════════════════════
-// PARSER JSON RENFORCÉ (5 STRATÉGIES)
-// ══════════════════════════════════════════════════════════════════
-function escapeControlCharsInStrings(text){let result='';let inString=false;let escape=false;for(let i=0;i<text.length;i++){const ch=text[i];if(escape){result+=ch;escape=false;continue}if(ch==='\\'){result+=ch;escape=true;continue}if(ch==='"'){inString=!inString;result+=ch;continue}if(inString){if(ch==='\n'){result+='\\n';continue}if(ch==='\r'){result+='\\r';continue}if(ch==='\t'){result+='\\t';continue}const code=ch.charCodeAt(0);if(code<32){result+='\\u'+code.toString(16).padStart(4,'0');continue}}result+=ch}return result}
-function balanceJson(text){let ob=0,ok=0,inString=false,escape=false;for(let i=0;i<text.length;i++){const ch=text[i];if(escape){escape=false;continue}if(ch==='\\'){escape=true;continue}if(ch==='"'){inString=!inString;continue}if(inString)continue;if(ch==='{')ob++;else if(ch==='}')ob--;else if(ch==='[')ok++;else if(ch===']')ok--}let r=text;if(inString)r+='"';while(ok>0){r+=']';ok--}while(ob>0){r+='}';ob--}return r}
-function extractJson(text){if(!text)return null;let c=text.trim();const fm=c.match(/```(?:json)?\s*([\s\S]*?)```/);if(fm)c=fm[1].trim();const fb=c.indexOf('{');if(fb<0)return null;c=c.slice(fb);try{return JSON.parse(c)}catch(e1){}try{return JSON.parse(escapeControlCharsInStrings(c))}catch(e2){}try{const lb=c.lastIndexOf('}');if(lb>0)return JSON.parse(escapeControlCharsInStrings(c.slice(0,lb+1)))}catch(e3){}try{return JSON.parse(balanceJson(escapeControlCharsInStrings(c)))}catch(e4){}return null}
-
-// ══════════════════════════════════════════════════════════════════
-// IMAGE — FORMAT 1K + RATIO
+// GÉNÉRATION IMAGE & VIDÉO
 // ══════════════════════════════════════════════════════════════════
 async function generateImage(prompt) {
   const body = {
@@ -520,7 +467,6 @@ async function generateImage(prompt) {
     size: '1K',
     ratio: '9:16'
   };
-  debugLog('ai', 'PROMPT IMAGE', 'Envoyé (' + prompt.length + ' chars)', prompt.slice(0, 400) + '…');
   const res = await apiFetch(API_BASE + '/images/generations', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -529,14 +475,9 @@ async function generateImage(prompt) {
   const data = await res.json();
   const item = data.data && data.data[0];
   if (!item) throw new Error('Pas de donnée image');
-  if (item.url) return item.url;
-  if (item.b64_json) return 'data:image/png;base64,' + item.b64_json;
-  throw new Error('Format inconnu');
+  return item.url || ('data:image/png;base64,' + item.b64_json);
 }
 
-// ══════════════════════════════════════════════════════════════════
-// VIDÉO — MULTI-ENDPOINTS + DÉCODEUR ID COMPOSITE
-// ══════════════════════════════════════════════════════════════════
 function decodeCompositeId(composite){
   if(!composite||typeof composite!=='string')return null;
   if(!composite.startsWith('video_'))return null;
@@ -547,14 +488,15 @@ function decodeCompositeId(composite){
 }
 
 async function createVideoTask(prompt, imageUrl, duration) {
+  const modelToUse = activeVideoModel;
   const body = {
-    model: MODEL_VIDEO,
+    model: modelToUse,
     prompt: sanitizeForApi(prompt),
     num_frames: duration,
     frame_rate: FRAME_RATE
   };
   if (imageUrl) body.image = imageUrl;
-  debugLog('ai', 'PROMPT VIDÉO', 'Envoyé (' + body.prompt.length + ' chars)', body.prompt.slice(0, 700) + '…');
+  debugLog('ai', 'PROMPT VIDÉO', 'Modèle [' + modelToUse + '] : ' + prompt.slice(0, 300) + '…');
   const res = await apiFetch(API_BASE + '/videos', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -562,10 +504,9 @@ async function createVideoTask(prompt, imageUrl, duration) {
   }, 'Video Task', 4);
   const data = await res.json();
   const compositeId = data.video_id || data.id || data.task_id;
-  if (!compositeId) throw new Error('Pas de video_id');
+  if (!compositeId) throw new Error('Pas de video_id retourné');
   const innerId = decodeCompositeId(compositeId);
-  debugLog('info', 'VIDÉO ID', 'composite=' + compositeId.slice(0,60) + '… · inner=' + (innerId || '—'));
-  return { compositeId, innerId, raw: data };
+  return { compositeId, innerId, raw: data, modelName: modelToUse };
 }
 
 function buildIdCandidates(videoIdObj){
@@ -577,152 +518,88 @@ function buildIdCandidates(videoIdObj){
   } else if(videoIdObj&&typeof videoIdObj==='object'){
     if(videoIdObj.compositeId)ids.push({label:'composite',value:videoIdObj.compositeId});
     if(videoIdObj.innerId)ids.push({label:'inner',value:videoIdObj.innerId});
-    const raw=videoIdObj.raw||{};
-    for(const f of ['id','task_id','request_id']){
-      if(raw[f]&&!ids.some(x=>x.value===raw[f]))ids.push({label:'raw.'+f,value:raw[f]});
-    }
   }
-  const seen=new Set();
-  return ids.filter(x=>{if(seen.has(x.value))return false;seen.add(x.value);return true});
+  return ids;
 }
-
-const POLL_URL_BUILDERS=[
-  {name:'agnesapi-composite', build:(id)=>POLL_BASE+'?video_id='+encodeURIComponent(id)+'&model_name='+encodeURIComponent(MODEL_VIDEO)},
-  {name:'v1-rest',            build:(id)=>API_BASE+'/videos/'+encodeURIComponent(id)},
-  {name:'v1-rest-status',     build:(id)=>API_BASE+'/videos/'+encodeURIComponent(id)+'/status'},
-  {name:'v1-rest-model',      build:(id)=>API_BASE+'/videos/'+encodeURIComponent(id)+'?model_name='+encodeURIComponent(MODEL_VIDEO)},
-];
 
 async function pollVideo(videoIdObj, onProgress) {
   const candidates=buildIdCandidates(videoIdObj);
-  if(candidates.length===0)throw new Error('Aucun ID de vidéo exploitable');
-  const minWait=Math.min(VIDEO_FIRST_POLL_DELAY_SEC,Math.max(40,Math.floor(90*0.7)));
-  let rem=minWait;
-  while(rem>0){
+  const modelName = videoIdObj.modelName || activeVideoModel;
+  
+  const pollBuilders=[
+    {name:'agnesapi-model', build:(id)=>POLL_BASE+'?video_id='+encodeURIComponent(id)+'&model_name='+encodeURIComponent(modelName)},
+    {name:'v1-rest', build:(id)=>API_BASE+'/videos/'+encodeURIComponent(id)},
+  ];
+
+  let rem = VIDEO_FIRST_POLL_DELAY_SEC;
+  while(rem > 0){
     if(state.stopRequested)throw new Error('Arrêt demandé');
-    onProgress('Préparation — '+rem+'s');
+    onProgress('File d\'attente — '+rem+'s');
     await sleep(1000);rem--;
   }
-  let working={builder:null, id:null};
+
   for(let attempt=0;attempt<VIDEO_MAX_POLL_ATTEMPTS;attempt++){
     if(state.stopRequested)throw new Error('Arrêt demandé');
     if(attempt>0){
-      const idx=Math.min(attempt-1,VIDEO_POLL_INTERVALS.length-1);
-      let r=VIDEO_POLL_INTERVALS[idx];
-      while(r>0){
+      const waitTime = VIDEO_POLL_INTERVALS[Math.min(attempt-1, VIDEO_POLL_INTERVALS.length-1)];
+      let r = waitTime;
+      while(r > 0){
         if(state.stopRequested)throw new Error('Arrêt demandé');
-        onProgress('Création — '+r+'s');
+        onProgress('Rendu vidéo — '+r+'s');
         await sleep(1000);r--;
       }
     }
-    const approaches=[];
-    if(working.builder&&working.id){approaches.push({builder:working.builder,id:working.id,priority:true})}
-    for(const builder of POLL_URL_BUILDERS){
+    for(const builder of pollBuilders){
       for(const cand of candidates){
-        if(!approaches.some(a=>a.builder===builder&&a.id===cand.value)){
-          approaches.push({builder,id:cand.value,idLabel:cand.label});
+        const url = builder.build(cand.value);
+        try{
+          const res = await apiFetch(url, {method:'GET'}, 'Polling', 2);
+          const d = await res.json();
+          const status = (d.status||'').toLowerCase();
+          const progress = d.progress||0;
+          onProgress('Génération — '+progress+'%');
+          if(['completed','succeeded','done'].includes(status)){
+            return (d.metadata&&d.metadata.url)||d.url||(d.output&&d.output.url);
+          }
+          if(['failed','error','cancelled'].includes(status)){
+            throw new Error('Échec vidéo ('+status+')');
+          }
+          break;
+        }catch(e){
+          if(e.message==='Arrêt demandé')throw e;
         }
       }
     }
-    let gotSuccessResponse=false;
-    let lastError=null;
-    for(const ap of approaches){
-      if(state.stopRequested)throw new Error('Arrêt demandé');
-      const url=ap.builder.build(ap.id);
-      try{
-        const res=await apiFetch(url,{method:'GET'},'Polling',2);
-        const d=await res.json();
-        if(!working.builder||!working.id){
-          working.builder=ap.builder;working.id=ap.id;
-          debugLog('success','POLLING','Endpoint validé : '+ap.builder.name+' · id='+ap.idLabel+' ('+ap.id.slice(0,40)+'…)');
-        }
-        gotSuccessResponse=true;
-        const status=d.status||'unknown';
-        const progress=d.progress||0;
-        onProgress('Création — '+progress+'%');
-        debugLog('info','POLLING','status='+status+' progress='+progress+' ('+ap.builder.name+')');
-        if(status==='completed'||status==='succeeded'||status==='done'){
-          const videoUrl=(d.metadata&&d.metadata.url)||d.url||(d.output&&d.output.url);
-          if(!videoUrl)throw new Error('Terminé mais pas d\'URL');
-          return videoUrl;
-        }
-        if(status==='failed'||status==='error'||status==='cancelled')throw new Error('Échec ('+status+')');
-        break;
-      }catch(e){
-        if(e.message==='Arrêt demandé')throw e;
-        lastError=e;
-        if(e.status===404){debugLog('warn','POLLING','404 sur '+ap.builder.name+' id='+(ap.idLabel||'?')+' ('+ap.id.slice(0,30)+'…)');continue;}
-        if(e.status===401||e.status===403){continue}
-        debugLog('warn','POLLING','Erreur '+ap.builder.name+' : '+e.message);
-        break;
-      }
-    }
-    if(!gotSuccessResponse&&lastError){debugLog('warn','POLLING','Itération '+attempt+' : aucune approche n\'a répondu 200 — '+lastError.message)}
   }
   throw new Error('Délai maximal dépassé');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// BUILD PROMPTS
-// ══════════════════════════════════════════════════════════════════
-function buildTransformPrompt(style, intensity) {
-  const intensityMap = {
-    subtle: 'Apply a subtle anime style shift. Preserve shape, composition, and details with maximum fidelity. Colors shift gently, lighting quality improves slightly, texture is refined.',
-    moderate: 'Apply a balanced anime style transformation. Recolor the entire image, replace the lighting with the target lighting quality, apply the target texture and artistic technique — while keeping every subject, object, pose, position, and the exact composition of the input image.',
-    strong: 'Apply a bold, decisive anime transformation. Aggressively recolor every element, replace lighting quality completely, apply a strong new surface texture and rendering technique — while strictly preserving the exact subject, pose, and composition of the input image.'
-  };
+function buildTransformPrompt(style) {
   return [
-    'You are given ONE single image. Restyle it into an ANIME aesthetic, keeping EVERY ELEMENT of the original scene exactly where it is.',
-    '',
-    'STYLE TO APPLY: ' + style.prompt,
-    '',
-    'STRICT PRESERVATION RULES — DO NOT VIOLATE:',
-    '1. Keep the EXACT same subject(s), person(s), object(s), animal(s), and/or scene.',
-    '2. Keep the EXACT same pose, expression, gesture, and body position of every figure.',
-    '3. Keep the EXACT same composition, framing, crop, and camera angle.',
-    '4. Keep the EXACT same position, size, and number of every element.',
-    '5. Keep any text, logo, or graphic present in the input image untouched.',
-    '6. Do NOT add ANY new element, character, object, or prop.',
-    '7. Do NOT remove ANY existing element.',
-    '8. Do NOT change the identity, face, or features of any person.',
-    '',
-    'WHAT CHANGES: only the visual appearance — colors, lighting quality, texture, rendering technique, artistic treatment, anime aesthetic.',
-    '',
-    'INTENSITY: ' + (intensityMap[intensity] || intensityMap.moderate),
-    '',
-    'OUTPUT: same aspect ratio as input. High detail, clean anime aesthetic. No text, no watermark, no border added.'
-  ].join('\n');
+    'Restyle this image strictly into an anime aesthetic: ' + style.prompt,
+    'Keep exact same subjects, pose, and composition. Only transform art style, lighting and colors.',
+    'Vertical 9:16 portrait, high quality anime render, no extra text.'
+  ].join(' ');
 }
 
 function buildVideoPrompt(style, userPrompt) {
   return [
-    'Animate this exact anime image as the starting frame.',
-    'The subject must remain IDENTICAL to the input image: same face, same expression, same pose, same identity, same composition.',
-    'This is a CONTINUATION of the source image, not a re-imagination.',
-    userPrompt ? 'Motion direction: ' + userPrompt : 'Subtle motion, breathing, light, and atmosphere animation.',
+    'Animate this anime image into motion.',
+    userPrompt ? 'Action: ' + userPrompt : 'Natural gentle movements, anime aesthetic.',
     'Style: ' + style.prompt,
-    'Portrait 9:16 vertical, 24fps, clean anime aesthetic.',
-    'No text, no subtitles, no watermarks.',
-    'No music. Only natural ambient sounds.'
-  ].filter(Boolean).join('. ');
+    'Vertical 9:16, 24fps, high quality anime animation.'
+  ].join('. ');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// FILE UTILS
-// ══════════════════════════════════════════════════════════════════
-function fileToDataUri(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=e=>resolve(e.target.result);reader.onerror=()=>reject(new Error('Erreur lecture'));reader.readAsDataURL(file)})}
+function fileToDataUri(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=()=>rej(new Error('Erreur'));r.readAsDataURL(file)})}
 async function compressImage(dataUrl,maxSide){return new Promise((resolve)=>{const img=new Image();img.onload=()=>{let{width,height}=img;const scale=Math.min(1,maxSide/Math.max(width,height));width=Math.round(width*scale);height=Math.round(height*scale);const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,width,height);resolve(canvas.toDataURL('image/jpeg',0.88))};img.onerror=()=>resolve(dataUrl);img.src=dataUrl})}
 
-// ══════════════════════════════════════════════════════════════════
-// RATE LIMITED QUEUE
-// ══════════════════════════════════════════════════════════════════
 function createRateLimitedQueue(maxConcurrent,minIntervalMs){
-  let running=0;let lastStart=0;const queue=[];let resolveIdle=null;
+  let running=0,lastStart=0;const queue=[];let resolveIdle=null;
   function tryNext(){
     if(running>=maxConcurrent)return;
     if(queue.length===0){if(running===0&&resolveIdle){resolveIdle();resolveIdle=null}return}
-    const now=Date.now();
-    const wait=Math.max(0,lastStart+minIntervalMs-now);
+    const wait=Math.max(0,lastStart+minIntervalMs-Date.now());
     if(wait>0){setTimeout(tryNext,wait);return}
     const task=queue.shift();
     running++;lastStart=Date.now();
@@ -731,9 +608,6 @@ function createRateLimitedQueue(maxConcurrent,minIntervalMs){
   return{add(fn){return new Promise((resolve,reject)=>{queue.push(()=>fn().then(resolve,reject));setTimeout(tryNext,0)})},idle(){return new Promise(r=>{if(running===0&&queue.length===0)return r();resolveIdle=r})}}
 }
 
-// ══════════════════════════════════════════════════════════════════
-// INIT STYLES UI
-// ══════════════════════════════════════════════════════════════════
 function renderStyles(){
   const grid = document.getElementById('styles-grid');
   if(!grid) return;
@@ -746,55 +620,36 @@ function renderStyles(){
   ).join('');
   grid.querySelectorAll('.style-card').forEach(el => {
     el.addEventListener('click', () => {
-      const id = el.dataset.style;
-      const found = ANIME_STYLES.find(x => x.id === id);
-      if(found) {
-        state.selectedStyle = found;
-        renderStyles();
-        journalLog('Style sélectionné : ' + found.name, 'style');
-      }
+      const found = ANIME_STYLES.find(x => x.id === el.dataset.style);
+      if(found) { state.selectedStyle = found; renderStyles(); journalLog('Style : ' + found.name, 'style'); }
     });
   });
 }
 
-// ══════════════════════════════════════════════════════════════════
-// UPLOAD
-// ══════════════════════════════════════════════════════════════════
 async function handleFiles(files){
   const list = Array.from(files).filter(f => f.type.startsWith('image/'));
   if(!list.length) return;
-  const uploadZone = document.getElementById('upload-zone');
-  uploadZone.classList.add('loading');
-  setStatus('Chargement de ' + list.length + ' image(s)…');
-  const BATCH = 5;
-  for(let i=0;i<list.length;i+=BATCH){
-    const batch = list.slice(i,i+BATCH);
-    const results = await Promise.allSettled(batch.map(async f => {
-      try {
-        const raw = await fileToDataUri(f);
-        const compressed = await compressImage(raw, REF_MAX_SIDE);
-        return { id: Date.now() + Math.random(), dataUri: compressed, name: f.name };
-      } catch(e) { return null; }
-    }));
-    for(const r of results) {
-      if(r.status === 'fulfilled' && r.value) state.images.push(r.value);
-    }
-    renderImages();
+  const zone = document.getElementById('upload-zone');
+  zone.classList.add('loading');
+  setStatus('Lecture des photos…');
+  for(const f of list){
+    try {
+      const raw = await fileToDataUri(f);
+      const compressed = await compressImage(raw, REF_MAX_SIDE);
+      state.images.push({ id: Date.now() + Math.random(), dataUri: compressed });
+    }catch(e){}
   }
-  uploadZone.classList.remove('loading');
+  zone.classList.remove('loading');
   setStatus(null);
+  renderImages();
   updateButtons();
-  journalLog(state.images.length + ' image(s) chargée(s)', 'success');
 }
 
 function renderImages(){
   const grid = document.getElementById('images-grid');
   if(!grid) return;
   grid.innerHTML = state.images.map(img =>
-    '<div class="image-card">' +
-      '<img src="' + img.dataUri + '" alt="" loading="lazy">' +
-      '<button class="remove-btn" data-remove="' + img.id + '">✕</button>' +
-    '</div>'
+    '<div class="image-card"><img src="' + img.dataUri + '" alt=""><button class="remove-btn" data-remove="' + img.id + '">✕</button></div>'
   ).join('');
   grid.querySelectorAll('[data-remove]').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -806,9 +661,6 @@ function renderImages(){
   });
 }
 
-// ══════════════════════════════════════════════════════════════════
-// UPDATE BUTTONS
-// ══════════════════════════════════════════════════════════════════
 function updateButtons(){
   const btn = document.getElementById('generate-btn');
   if(!btn) return;
@@ -818,16 +670,11 @@ function updateButtons(){
   if(state.isRunning) btn.textContent = 'Transformation en cours…';
   else if(!hasKey) btn.textContent = 'Ajoutez votre clé API';
   else if(!hasImages) btn.textContent = 'Ajoutez des photos';
-  else btn.textContent = '🎨 Transformer ' + state.images.length + ' photo' + (state.images.length > 1 ? 's' : '');
+  else btn.textContent = '🎨 Transformer ' + state.images.length + ' photo(s)';
 }
 
-// ══════════════════════════════════════════════════════════════════
-// PIPELINE PRINCIPAL
-// ══════════════════════════════════════════════════════════════════
 async function startTransformation(){
   if(state.isRunning) return;
-  if(!state.images.length) { showToast('Ajoutez des photos','error'); return; }
-  if(!hasActiveKey()) { showToast('Ajoutez une clé API','error'); return; }
   state.isRunning = true;
   state.stopRequested = false;
   state.transformed = [];
@@ -836,18 +683,19 @@ async function startTransformation(){
   document.getElementById('transformed-grid').innerHTML = '';
   document.getElementById('transformed-count').textContent = '0';
   updateButtons();
-  journalLog('Transformation de ' + state.images.length + ' image(s) en style ' + state.selectedStyle.name, 'style');
+
   const total = state.images.length;
   const queue = createRateLimitedQueue(IMAGE_PARALLEL, IMAGE_INTERVAL_MS);
   const tasks = [];
+
   for(let i=0;i<total;i++){
     const idx = i;
     const img = state.images[idx];
     tasks.push(queue.add(async () => {
       if(state.stopRequested) return;
-      setStatus('Transformation ' + (idx + 1) + '/' + total + '…');
+      setStatus('Image ' + (idx + 1) + '/' + total + ' en cours…');
       try {
-        const prompt = buildTransformPrompt(state.selectedStyle, 'moderate');
+        const prompt = buildTransformPrompt(state.selectedStyle);
         const url = await generateImage(prompt);
         state.transformed.push({
           originalThumb: img.dataUri,
@@ -863,30 +711,23 @@ async function startTransformation(){
         journalLog('Image ' + (idx + 1) + ' transformée ✓', 'success');
       } catch(e) {
         journalLog('Image ' + (idx + 1) + ' échouée : ' + e.message, 'error');
-        debugLog('error', 'TRANSFORM', e.message);
       }
     }));
   }
   await Promise.allSettled(tasks);
   await queue.idle();
   state.isRunning = false;
-  state.stopRequested = false;
   document.getElementById('stop-btn').classList.remove('visible');
   updateButtons();
-  setStatus(state.transformed.length + ' / ' + total + ' image(s) transformée(s) ✦');
-  await sleep(3000);
   setStatus(null);
-  showToast(state.transformed.length + ' image(s) transformée(s)', 'success');
+  showToast(state.transformed.length + ' image(s) prête(s)', 'success');
 }
 
-// ══════════════════════════════════════════════════════════════════
-// RENDER TRANSFORMED
-// ══════════════════════════════════════════════════════════════════
 function renderTransformed(){
   const grid = document.getElementById('transformed-grid');
   if(!grid) return;
   grid.innerHTML = state.transformed.map((item, idx) => {
-    const hasVideo = item.videoUrl;
+    const hasVideo = !!item.videoUrl;
     const isGenerating = item.videoStatus === 'generating';
     const hasError = item.videoStatus === 'failed';
     return '<div class="transformed-card" id="transformed-' + idx + '">' +
@@ -896,22 +737,22 @@ function renderTransformed(){
       '</div>' +
       '<div class="trans-label">Image ' + (idx + 1) + ' — ' + esc(item.style.name) + '</div>' +
       '<div class="video-prompt-area">' +
-        '<textarea id="vprompt-' + idx + '" placeholder="Décrivez le mouvement pour la vidéo… (ex : un vent léger fait bouger les cheveux)" ' + (hasVideo ? 'disabled' : '') + '>' + esc(item.videoPrompt || '') + '</textarea>' +
+        '<textarea id="vprompt-' + idx + '" placeholder="Mouvement pour la vidéo (ex : il apprend le karaté dans le désert)" ' + (hasVideo ? 'disabled' : '') + '>' + esc(item.videoPrompt || '') + '</textarea>' +
         '<button class="btn-video" id="vbtn-' + idx + '" data-video-idx="' + idx + '" ' + (hasVideo || isGenerating ? 'disabled' : '') + '>' +
-          (hasVideo ? '✓ Vidéo générée' : isGenerating ? '⏳ Génération…' : hasError ? '↻ Réessayer' : '🎬 Générer la vidéo') +
+          (hasVideo ? '✓ Vidéo générée' : isGenerating ? '⏳ Génération en cours…' : hasError ? '↻ Réessayer' : '🎬 Générer la vidéo') +
         '</button>' +
       '</div>' +
       (hasVideo ? '<div class="video-result"><video src="' + item.videoUrl + '" controls playsinline preload="metadata"></video></div>' : '') +
-      (isGenerating ? '<div class="video-result"><div class="video-status">Génération en cours… <span id="vstatus-' + idx + '"></span></div></div>' : '') +
+      (isGenerating ? '<div class="video-result"><div class="video-status">Génération… <span id="vstatus-' + idx + '"></span></div></div>' : '') +
       (hasError ? '<div class="video-result"><div class="video-status" style="color:var(--err);">Échec : ' + esc(item.videoError || 'erreur') + '</div></div>' : '') +
     '</div>';
   }).join('');
+
   grid.querySelectorAll('.btn-video').forEach(btn => {
     btn.addEventListener('click', () => {
       const idx = parseInt(btn.dataset.videoIdx, 10);
       const promptEl = document.getElementById('vprompt-' + idx);
-      const userPrompt = promptEl ? promptEl.value.trim() : '';
-      launchVideoGeneration(idx, userPrompt);
+      launchVideoGeneration(idx, promptEl ? promptEl.value.trim() : '');
     });
   });
   grid.querySelectorAll('textarea[id^="vprompt-"]').forEach(ta => {
@@ -922,9 +763,6 @@ function renderTransformed(){
   });
 }
 
-// ══════════════════════════════════════════════════════════════════
-// VIDÉO PAR IMAGE
-// ══════════════════════════════════════════════════════════════════
 async function launchVideoGeneration(index, userPrompt){
   const item = state.transformed[index];
   if(!item || item.videoUrl || item.videoStatus === 'generating') return;
@@ -933,34 +771,35 @@ async function launchVideoGeneration(index, userPrompt){
   item.videoError = null;
   renderTransformed();
   const vstatusEl = document.getElementById('vstatus-' + index);
-  const updateStatus = (txt) => { if(vstatusEl) vstatusEl.textContent = txt; };
+  const updateProg = (txt) => { if(vstatusEl) vstatusEl.textContent = txt; };
+
   try {
-    journalLog('Génération vidéo ' + (index + 1) + '…', 'video');
+    journalLog('Lancement vidéo avec [' + activeVideoModel + ']…', 'video');
     const prompt = buildVideoPrompt(item.style, userPrompt);
-    const videoIdObj = await createVideoTask(prompt, item.imageUrl, 145);
-    const videoUrl = await pollVideo(videoIdObj, (prog) => updateStatus(prog));
+    const videoIdObj = await createVideoTask(prompt, item.imageUrl, 120);
+    const videoUrl = await pollVideo(videoIdObj, updateProg);
     item.videoUrl = videoUrl;
     item.videoStatus = 'done';
     renderTransformed();
-    showToast('Vidéo ' + (index + 1) + ' prête !', 'success');
-    journalLog('Vidéo ' + (index + 1) + ' prête ✓', 'success');
+    showToast('Vidéo générée avec succès !', 'success');
   } catch(e) {
     item.videoStatus = 'failed';
     item.videoError = e.message;
     renderTransformed();
-    journalLog('Vidéo ' + (index + 1) + ' échouée : ' + e.message, 'error');
-    debugLog('error', 'VIDÉO', e.message);
+    journalLog('Vidéo échouée : ' + e.message, 'error');
   }
 }
 
-// ══════════════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════════════
 (function init(){
   document.getElementById('api-save-btn').addEventListener('click', saveKeysFromUI);
-  document.getElementById('api-keys-input').addEventListener('keydown', e => {
-    if(e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); saveKeysFromUI(); }
-  });
+  const modelSelect = document.getElementById('video-model-select');
+  if(modelSelect){
+    modelSelect.addEventListener('change', e => {
+      activeVideoModel = e.target.value;
+      journalLog('Modèle vidéo changé : ' + activeVideoModel, 'info');
+      debugLog('info', 'CONFIG', 'Nouveau modèle vidéo : ' + activeVideoModel);
+    });
+  }
   document.querySelectorAll('[data-toggle]').forEach(h => {
     h.addEventListener('click', () => {
       const el = document.getElementById(h.dataset.toggle);
@@ -968,37 +807,20 @@ async function launchVideoGeneration(index, userPrompt){
     });
   });
   document.getElementById('upload-zone').addEventListener('click', () => document.getElementById('file-input').click());
-  document.getElementById('file-input').addEventListener('change', e => {
-    handleFiles(e.target.files);
-    e.target.value = '';
-  });
+  document.getElementById('file-input').addEventListener('change', e => { handleFiles(e.target.files); e.target.value = ''; });
   document.getElementById('generate-btn').addEventListener('click', startTransformation);
-  document.getElementById('stop-btn').addEventListener('click', () => {
-    state.stopRequested = true;
-    journalLog('Arrêt demandé', 'warn');
-    setStatus('Arrêt en cours…');
-  });
-  document.getElementById('debug-header').addEventListener('click', e => { if(e.target.tagName === 'BUTTON') return; toggleDebugCollapse(); });
-  document.getElementById('debug-collapse-btn').addEventListener('click', e => { e.stopPropagation(); toggleDebugCollapse(); });
-  document.getElementById('debug-clear-btn').addEventListener('click', e => { e.stopPropagation(); clearDebug(); });
-  document.getElementById('debug-copy-btn').addEventListener('click', e => { e.stopPropagation(); copyDebug(); });
+  document.getElementById('stop-btn').addEventListener('click', () => { state.stopRequested = true; setStatus('Arrêt…'); });
+  document.getElementById('debug-collapse-btn').addEventListener('click', toggleDebugCollapse);
+  document.getElementById('debug-clear-btn').addEventListener('click', clearDebug);
+  document.getElementById('debug-copy-btn').addEventListener('click', copyDebug);
   document.getElementById('tab-journal').addEventListener('click', () => switchTab('journal'));
   document.getElementById('tab-tech').addEventListener('click', () => switchTab('tech'));
 
   renderStyles();
   refreshKeyPool();
   updateApiPanel();
-  updateButtons();
-  renderImages();
-  renderTransformed();
-
   setInterval(renderKeysStatus, 1000);
-
-  debugLog('success', 'INIT', 'Studio Anime prêt');
-  debugLog('info', 'INIT', '10 styles anime disponibles');
-  debugLog('info', 'INIT', 'Pool multi-clés API · parser JSON renforcé · polling multi-endpoints');
-  journalLog('Studio Anime prêt. Choisis un style, ajoute des photos et clique sur « Transformer ».', 'highlight');
 })();
 </script>
 </body>
-  </html>
+</html>
